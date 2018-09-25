@@ -13,6 +13,8 @@ services:
       - SYLIUS_DATABASE_PASSWORD=sylius
       - SYLIUS_MAILER_HOST=mailhog:1025
       - SYLIUS_APP_DEV_PERMITTED=1
+    volumes:
+      - "./sylius:/var/www/sylius"
     ports:
       - 8000:80
 
