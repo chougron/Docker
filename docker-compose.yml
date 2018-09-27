@@ -14,9 +14,9 @@ services:
       - SYLIUS_MAILER_HOST=mailhog:1025
       - SYLIUS_APP_DEV_PERMITTED=1
     volumes:
-      - "./sylius:/var/www/sylius"
+      - "./syliusExtension:/var/www/syliusExtension"
     ports:
-      - 8000:80
+      - 8080:8080
 
   mysql:
     container_name: ${NAME}-mysql

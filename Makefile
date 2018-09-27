@@ -20,8 +20,7 @@ has_created_containers := $(shell docker ps -a -f "name=${NAME}" --format="{{.ID
 
 .PHONY: build
 build:: ##@Docker Build the Sylius application image
-	docker-compose build \
-	    --no-cache
+	docker-compose build
 
 .PHONY: up
 up:: ##@Sylius Start the Sylius stack for development (using docker-compose)
@@ -48,20 +47,16 @@ install:: ##@Sylius Install the Sylius project
         -ti \
         -u www-data \
         ${NAME}-app \
-        composer create-project \
-        		sylius/sylius-standard \
-        		/var/www/sylius \
-        		1.2.6 \
-        	&& chmod +x sylius/bin/console
-
-.PHONY: assets
-assets:: ##@Development generate assets
-	docker exec \
-        -ti \
-        -u www-data \
-        ${NAME}-app \
-        cd /var/www/sylius \
-        yarn install && yarn run gulp
+        php -d -1 /usr/local/bin/composer create-project \
+        		sylius/plugin-skeleton \
+        		syliusExtension \
+			&& cd /var/www/syliusExtension/tests/Application \ 
+			&& yarn install \
+			&& yarn build \
+        	&& chmod +x bin/console \
+			&& bin/console assets:install public -e test \
+			&& bin/console doctrine:database:create -e test \
+			&& bin/console doctrine:schema:create -e test
 
 .PHONY: shell
 shell:: ##@Development Bring up a shell
